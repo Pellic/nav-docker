@@ -110,12 +110,13 @@ New-Item "HKCR:\MSReportBuilder_ReportFile_32\shell\Open" -itemtype Directory -E
 New-Item "HKCR:\MSReportBuilder_ReportFile_32\shell\Open\command" -itemtype Directory -ErrorAction Ignore | Out-null
 Set-Item "HKCR:\MSReportBuilder_ReportFile_32\shell\Open\command" -value "$reportBuilderPath\MSReportBuilder.exe ""%1"""
 
-Import-Module "$serviceTierFolder\Microsoft.Dynamics.Nav.Management.dll"
+#Import-Module "$serviceTierFolder\Microsoft.Dynamics.Nav.Management.dll"
 
 # Restore CRONUS Demo database to databases folder
 Write-Host "Restoring CRONUS Demo Database"
 $bak = (Get-ChildItem -Path "$navDvdPath\SQLDemoDatabase\CommonAppData\Microsoft\Microsoft Dynamics NAV\*\Database\*.bak")[0]
 
+<#
 # Restore database
 $databaseServer = "localhost"
 $databaseInstance = "SQLEXPRESS"
@@ -133,6 +134,7 @@ New-NAVDatabase -DatabaseServer $databaseServer `
                 -FilePath "$databaseFile" `
                 -DestinationPath "$databaseFolder" `
                 -Timeout 300 | Out-Null
+#>
 
 # run local installers if present
 if (Test-Path "$navDvdPath\Installers" -PathType Container) {
