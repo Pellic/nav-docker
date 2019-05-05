@@ -24,9 +24,19 @@ if ($navcredential -eq $null -or $navcredential -eq [System.Management.Automatio
 {
     $navcredential = get-credential -UserName "admin" -Message "Enter NAV Super User Credentials"
 }
-#$workspaceFolder = (Get-Item (Join-Path $PSScriptRoot "..")).FullName
-#$additionalParameters = @("--volume ""${workspaceFolder}:C:\Source""") 
-#$myscripts = @()
+
+#Additional parameters
+$workspaceFolder = (Get-Item (Join-Path $PSScriptRoot "..")).FullName
+$additionalParameters = @("--volume ""${workspaceFolder}:C:\Source""") 
+$additionalParameters = @("--volume ${hostFolder}:c:\mydb")
+$additionalParameters = @("--env clickonce=Y")
+$additionalParameters =@("--env WebClient=N", "--env httpsite=N")
+
+#Public container for external access
+$additionalParameters = @("--publish 8080:8080",
+                          "--publish 443:443", 
+                          "--publish 7046-7049:7046-7049")
+
 $shortcuts = "Desktop"
 $licenseFile = 'C:\bkp pc lavoro\licenze nav\LICENZE\LICENZE\5165051_2018.flf'
 $ContainerName = "nav-2009r2-dev"
@@ -36,7 +46,6 @@ New-NavContainer -accept_eula `
                  -imageName $imageName `
                  -navDvdPath "C:\InstallerNAV\nav2009r2" `
                  -navDvdCountry it `
-                 <# #> `
                  -Auth NavUserPassword `
                  -Credential $navcredential `
                  -databaseServer $databaseServer `
@@ -50,6 +59,7 @@ New-NavContainer -accept_eula `
                  -myScripts @("C:\bkp pc lavoro\PS samples\NavDocker\nav-docker\generic\Run\60") `
                  -licenseFile $licenseFile `
                  -shortcuts $shortcuts `
+                 <#-additionalParameters $additionalParameters #> `
                  -includeCSide
 
 #Try to create NavUser

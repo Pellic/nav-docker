@@ -29,6 +29,8 @@ if ($navcredential -eq $null -or $navcredential -eq [System.Management.Automatio
 $workspaceFolder = (Get-Item (Join-Path $PSScriptRoot "..")).FullName
 $additionalParameters = @("--volume ""${workspaceFolder}:C:\Source""") 
 $additionalParameters = @("--volume ${hostFolder}:c:\mydb")
+$additionalParameters = @("--env clickonce=Y")
+
 #Public container for external access
 $additionalParameters = @("--publish 8080:8080",
                           "--publish 443:443", 
