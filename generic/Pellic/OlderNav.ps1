@@ -29,10 +29,7 @@ if ($navcredential -eq $null -or $navcredential -eq [System.Management.Automatio
 #$myscripts = @()
 $shortcuts = "Desktop"
 $licenseFile = 'C:\bkp pc lavoro\licenze nav\LICENZE\LICENZE\5165051_2018.flf'
-$ContainerName = "nav2009r2-dev"
-
-$licenseFile = 'C:\bkp pc lavoro\licenze nav\LICENZE\LICENZE\5165051_2018.flf'
-$navcredential = New-Object System.Management.Automation.PSCredential -argumentList $NavUserName, (ConvertTo-SecureString -String $NavPassword -AsPlainText -Force)
+$ContainerName = "nav-2009r2-dev"
 
 New-NavContainer -accept_eula `
                  -containerName $ContainerName `
@@ -54,6 +51,9 @@ New-NavContainer -accept_eula `
                  -licenseFile $licenseFile `
                  -shortcuts $shortcuts `
                  -includeCSide
+
+#Try to create NavUser
+New-NavContainerNavUser -ErrorAction Continue -containerName $ContainerName  -Credential $navcredential -PermissionSetId SUPER -ChangePasswordAtNextLogOn $false
 
 #move shortcuts to a desktop folder
 $directory= [System.Environment]::GetFolderPath('Desktop')

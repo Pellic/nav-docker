@@ -52,8 +52,8 @@ Write-Host "Starting Internet Information Server"
 Start-Service -name $IisServiceName
 
 # Prerequisites
-#Write-Host "Installing Report Viewer"
-#start-process "$NavDvdPath\Prerequisite Components\Microsoft Report Viewer 2008\ReportViewer.exe" -ArgumentList "/q" -Wait
+Write-Host "Installing Report Viewer"
+start-process "$NavDvdPath\Prerequisite Components\Microsoft Report Viewer 2008\ReportViewer2008.exe" -ArgumentList "/q" -Wait
 
 #Write-Host "Installing OpenXML"
 #start-process "$NavDvdPath\Prerequisite Components\Open XML SDK 2.0 for Microsoft Office\OpenXMLSDKv2.msi" -ArgumentList "/quiet /qn /passive" -Wait
@@ -116,7 +116,7 @@ Set-Item "HKCR:\MSReportBuilder_ReportFile_32\shell\Open\command" -value "$repor
 Write-Host "Restoring CRONUS Demo Database"
 $bak = (Get-ChildItem -Path "$navDvdPath\SQLDemoDatabase\CommonAppData\Microsoft\Microsoft Dynamics NAV\*\Database\*.bak")[0]
 
-<#
+
 # Restore database
 $databaseServer = "localhost"
 $databaseInstance = "SQLEXPRESS"
@@ -128,14 +128,23 @@ $databaseFile = $bak.FullName
 $collation = (Invoke-Sqlcmd "RESTORE HEADERONLY FROM DISK = '$databaseFile'").Collation
 SetDatabaseServerCollation -collation $collation
 
+<# 
 New-NAVDatabase -DatabaseServer $databaseServer `
                 -DatabaseInstance $databaseInstance `
                 -DatabaseName "$databaseName" `
                 -FilePath "$databaseFile" `
                 -DestinationPath "$databaseFolder" `
                 -Timeout 300 | Out-Null
-#>
+#>  
+Write-Host "EMPE old DB script" 
+$NAVFolder = 'C:\Program Files (x86)\Microsoft Dynamics NAV\60\Classic'
+$createdatabasefinsqlcommand = """$NAVFolder\finsql.exe"" command=createdatabase, servername=$databaseServer, database=$databaseName, collation=$collation"
+$Command = $createdatabasefinsqlcommand
+Write-Debug $Command
+cmd /c $Command             
 
+# run local installers if present
+Write-Host "EMPE Installers "
 # run local installers if present
 if (Test-Path "$navDvdPath\Installers" -PathType Container) {
     Get-ChildItem "$navDvdPath\Installers" -Recurse | Where-Object { $_.PSIsContainer } | % {
@@ -153,18 +162,25 @@ if (Test-Path "$navDvdPath\Installers" -PathType Container) {
         }
     }
 }
+#msi installer
+<#
+msiexec /i "Microsoft Dynamics NAV RoleTailored Client.msi" /quiet /norestart
+msiexec /i RoleTailoredClient.Local.De.msi /quiet /norestart
+msiexec /i RoleTailoredClient.Local.It.msi /quiet /norestart
+#>
 
 Write-Host "Modifying NAV Service Tier Config File for Docker"
+Write-Host "$databaseServer, $databaseInstance, $databaseName, $ServerInstance, $NavServiceName "
 $CustomConfigFile =  Join-Path $serviceTierFolder "CustomSettings.config"
 $CustomConfig = [xml](Get-Content $CustomConfigFile)
-$customConfig.SelectSingleNode("//appSettings/add[@key='DatabaseServer']").Value = $databaseServer
-$customConfig.SelectSingleNode("//appSettings/add[@key='DatabaseInstance']").Value = $databaseInstance
+$customConfig.SelectSingleNode("//appSettings/add[@key='DatabaseServer']").Value = "$databaseServer"
+$customConfig.SelectSingleNode("//appSettings/add[@key='DatabaseInstance']").Value = "$databaseInstance"
 $customConfig.SelectSingleNode("//appSettings/add[@key='DatabaseName']").Value = "$databaseName"
 $customConfig.SelectSingleNode("//appSettings/add[@key='ServerInstance']").Value = "$ServerInstance"
-$customConfig.SelectSingleNode("//appSettings/add[@key='ManagementServicesPort']").Value = "7045"
-$customConfig.SelectSingleNode("//appSettings/add[@key='ClientServicesPort']").Value = "7046"
-$customConfig.SelectSingleNode("//appSettings/add[@key='SOAPServicesPort']").Value = "7047"
-$customConfig.SelectSingleNode("//appSettings/add[@key='ODataServicesPort']").Value = "7048"
+#$customConfig.SelectSingleNode("//appSettings/add[@key='ManagementServicesPort']").Value = "7045"
+$customConfig.SelectSingleNode("//appSettings/add[@key='ServerPort']").Value = "7046"
+$customConfig.SelectSingleNode("//appSettings/add[@key='WebServicePort']").Value = "7047"
+#$customConfig.SelectSingleNode("//appSettings/add[@key='ODataServicesPort']").Value = "7048"
 $taskSchedulerKeyExists = ($customConfig.SelectSingleNode("//appSettings/add[@key='EnableTaskScheduler']") -ne $null)
 if ($taskSchedulerKeyExists) {
     $customConfig.SelectSingleNode("//appSettings/add[@key='EnableTaskScheduler']").Value = "false"
@@ -176,7 +192,10 @@ Write-Host "Creating NAV Service Tier"
 $serviceCredentials = New-Object System.Management.Automation.PSCredential ("NT AUTHORITY\SYSTEM", (new-object System.Security.SecureString))
 $serverFile = "$serviceTierFolder\Microsoft.Dynamics.Nav.Server.exe"
 $configFile = "$serviceTierFolder\Microsoft.Dynamics.Nav.Server.exe.config"
+#$NavServiceName = "Nav"
 New-Service -Name $NavServiceName -BinaryPathName """$serverFile"" `$$ServerInstance /config ""$configFile""" -DisplayName "Microsoft Dynamics NAV Server [$ServerInstance]" -Description "$ServerInstance" -StartupType manual -Credential $serviceCredentials -DependsOn @("HTTP") | Out-Null
+
+Write-Host $NavServiceName
 
 $serverVersion = [System.Diagnostics.FileVersionInfo]::GetVersionInfo($serverFile)
 $versionFolder = ("{0}{1}" -f $serverVersion.FileMajorPart,$serverVersion.FileMinorPart)
@@ -186,11 +205,11 @@ New-ItemProperty -Path $registryPath -Name 'Path' -Value "$serviceTierFolder\" -
 New-ItemProperty -Path $registryPath -Name 'Installed' -Value 1 -Force | Out-Null
 
 Write-Host "Starting NAV Service Tier"
-Start-Service -Name $NavServiceName -WarningAction Ignore
+Start-Service -Name $NavServiceName -WarningAction Ignore -Verbose 
 
-Write-Host "Importing CRONUS license file"
-$licensefile = (Get-Item -Path "$navDvdPath\SQLDemoDatabase\CommonAppData\Microsoft\Microsoft Dynamics NAV\*\Database\cronus.flf").FullName
-Import-NAVServerLicense -LicenseData ([Byte[]]$(Get-Content -Path $licensefile -Encoding Byte)) -ServerInstance $ServerInstance -Database NavDatabase -WarningAction SilentlyContinue
+#Write-Host "Importing CRONUS license file"
+#$licensefile = (Get-Item -Path "$navDvdPath\SQLDemoDatabase\CommonAppData\Microsoft\Microsoft Dynamics NAV\*\Database\cronus.flf").FullName
+#Import-NAVServerLicense -LicenseData ([Byte[]]$(Get-Content -Path $licensefile -Encoding Byte)) -ServerInstance $ServerInstance -Database NavDatabase -WarningAction SilentlyContinue
 
 $timespend = [Math]::Round([DateTime]::Now.Subtract($startTime).Totalseconds)
 Write-Host "Installation took $timespend seconds"

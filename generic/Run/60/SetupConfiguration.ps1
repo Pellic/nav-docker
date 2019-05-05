@@ -18,11 +18,12 @@ $customConfig.SelectSingleNode("//appSettings/add[@key='DatabaseServer']").Value
 $customConfig.SelectSingleNode("//appSettings/add[@key='DatabaseInstance']").Value = $databaseInstance
 $customConfig.SelectSingleNode("//appSettings/add[@key='DatabaseName']").Value = "$databaseName"
 $customConfig.SelectSingleNode("//appSettings/add[@key='ServerInstance']").Value = "NAV"
-$customConfig.SelectSingleNode("//appSettings/add[@key='ManagementServicesPort']").Value = "$managementServicesPort"
-$customConfig.SelectSingleNode("//appSettings/add[@key='ClientServicesPort']").Value = "$clientServicesPort"
-$customConfig.SelectSingleNode("//appSettings/add[@key='SOAPServicesPort']").Value = "$soapServicesPort"
-$customConfig.SelectSingleNode("//appSettings/add[@key='ODataServicesPort']").Value = "$oDataServicesPort"
+#$customConfig.SelectSingleNode("//appSettings/add[@key='ManagementServicesPort']").Value = "$managementServicesPort"
+$customConfig.SelectSingleNode("//appSettings/add[@key='ServerPort']").Value = "$clientServicesPort"
+$customConfig.SelectSingleNode("//appSettings/add[@key='WebServicePort']").Value = "$soapServicesPort"
+#$customConfig.SelectSingleNode("//appSettings/add[@key='ODataServicesPort']").Value = "$oDataServicesPort"
 
+<#
 $taskSchedulerKeyExists = ($customConfig.SelectSingleNode("//appSettings/add[@key='EnableTaskScheduler']") -ne $null)
 if ($taskSchedulerKeyExists) {
     $customConfig.SelectSingleNode("//appSettings/add[@key='EnableTaskScheduler']").Value = "false"
@@ -81,7 +82,7 @@ if ($auth -eq "AccessControlService") {
         $customConfig.SelectSingleNode("//appSettings/add[@key='WSFederationLoginEndpoint']").Value = $federationLoginEndpoint
     }
 }
-
+#>
 $CustomConfig.Save($CustomConfigFile)
 
 $managementServicesPort,$soapServicesPort,$oDataServicesPort,$developerServicesPort | % {
