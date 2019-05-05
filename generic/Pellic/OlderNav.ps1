@@ -29,7 +29,7 @@ if ($navcredential -eq $null -or $navcredential -eq [System.Management.Automatio
 #$myscripts = @()
 $shortcuts = "Desktop"
 $licenseFile = 'C:\bkp pc lavoro\licenze nav\LICENZE\LICENZE\5165051_2018.flf'
-$ContainerName = "nav-2009r2-dev"
+$ContainerName = "nav-2009r2"
 
 New-NavContainer -accept_eula `
                  -containerName $ContainerName `
