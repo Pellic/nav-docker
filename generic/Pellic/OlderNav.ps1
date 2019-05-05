@@ -33,10 +33,11 @@ $additionalParameters = @("--env clickonce=Y")
 $additionalParameters =@("--env WebClient=N", "--env httpsite=N")
 
 #Public container for external access
+<#
 $additionalParameters = @("--publish 8080:8080",
                           "--publish 443:443", 
                           "--publish 7046-7049:7046-7049")
-
+#>
 $shortcuts = "Desktop"
 $licenseFile = 'C:\bkp pc lavoro\licenze nav\LICENZE\LICENZE\5165051_2018.flf'
 $ContainerName = "nav-2009r2-dev"
@@ -59,7 +60,7 @@ New-NavContainer -accept_eula `
                  -myScripts @("C:\bkp pc lavoro\PS samples\NavDocker\nav-docker\generic\Run\60") `
                  -licenseFile $licenseFile `
                  -shortcuts $shortcuts `
-                 <#-additionalParameters $additionalParameters #> `
+                 -additionalParameters $additionalParameters `
                  -includeCSide
 
 #Try to create NavUser
