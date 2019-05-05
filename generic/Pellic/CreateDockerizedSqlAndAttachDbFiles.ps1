@@ -1,7 +1,6 @@
-﻿
+﻿$path = "c:\ContainerDBFiles"
 #$imageName = "microsoft/bcsandbox:it-ltsc2019"
 $imageName = "mcr.microsoft.com/businesscentral/onprem:it-ltsc2019"
-$path = "c:\ContainerDBFiles"
 #Extract-FilesFromNavContainerImage -imageName $imageName -path $path -extract database -force
 
 $hostFolder = "$path\databases"
