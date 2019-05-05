@@ -23,8 +23,15 @@ if ($navcredential -eq $null -or $navcredential -eq [System.Management.Automatio
 {
     $navcredential = get-credential -UserName "admin" -Message "Enter NAV Super User Credentials"
 }
-#$workspaceFolder = (Get-Item (Join-Path $PSScriptRoot "..")).FullName
-#$additionalParameters = @("--volume ""${workspaceFolder}:C:\Source""") 
+
+#Additional parameters examples
+$workspaceFolder = (Get-Item (Join-Path $PSScriptRoot "..")).FullName
+$additionalParameters = @("--volume ""${workspaceFolder}:C:\Source""") 
+$additionalParameters = @("--volume ${hostFolder}:c:\mydb")
+#Public container for external access
+$additionalParameters = @("--publish 8080:8080",
+                          "--publish 443:443", 
+                          "--publish 7046-7049:7046-7049")
 $myscripts = @()
 $shortcuts = "Desktop"
 $licenseFile = 'C:\bkp pc lavoro\licenze nav\LICENZE\LICENZE\5165051_2018.flf'
@@ -45,7 +52,7 @@ New-NavContainer -accept_eula `
                  -includeCSide `
                  -doNotExportObjectsToText `
                  -shortcuts $shortcuts `
-                 <#-additionalParameters @("--volume ${hostFolder}:c:\mydb")#> `
+                 <#-additionalParameters $additionalParameters #> `
                  -enableSymbolLoading 
 
 New-NavContainerNavUser -ErrorAction Continue -containerName $ContainerName  -Credential $navcredential -PermissionSetId SUPER -ChangePasswordAtNextLogOn $false
