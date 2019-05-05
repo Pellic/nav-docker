@@ -30,7 +30,7 @@ $workspaceFolder = (Get-Item (Join-Path $PSScriptRoot "..")).FullName
 $additionalParameters = @("--volume ""${workspaceFolder}:C:\Source""") 
 $additionalParameters = @("--volume ${hostFolder}:c:\mydb")
 $additionalParameters = @("--env clickonce=Y")
-$additionalParameters =@("--env WebClient=N", "--env httpsite=N")
+$additionalParameters =@("--env WebClient=N", "--env httpsite=N","--env clickonce=Y")
 
 #Public container for external access
 <#
