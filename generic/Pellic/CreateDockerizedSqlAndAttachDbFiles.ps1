@@ -27,5 +27,6 @@ $databaseServer = $dbserverid.SubString(0,12)
 $databaseInstance = ""
 $SqlIP = docker inspect --format '{{.NetworkSettings.Networks.nat.IPAddress}}' "$DockerSQL"
 $databaseServer = $SqlIP
+$SqlIP
 #docker exec -it "$DockerSQL" /opt/mssql-tools/bin/sqlcmd -S localhost -U "$ClearDbUser" -P "$ClearDbPwd"
 #$TestSqlContainer = sqlcmd -U "$ClearDbUser" -P "$ClearDbPwd" -S "$SqlIP" -Q "select @@version"
