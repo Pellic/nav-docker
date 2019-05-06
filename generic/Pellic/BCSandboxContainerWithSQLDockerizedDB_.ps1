@@ -35,7 +35,7 @@ $additionalParameters = @("--env clickonce=Y")
 $additionalParameters = @("--publish 8080:8080",
                           "--publish 443:443", 
                           "--publish 7046-7049:7046-7049")
-$myscripts = @()
+#$myscripts = @()
 $shortcuts = "Desktop"
 $licenseFile = 'C:\bkp pc lavoro\licenze nav\LICENZE\LICENZE\5165051_2018.flf'
 $ContainerName = "bc-sandbox-dev"
@@ -66,5 +66,6 @@ $NewDir = New-Item -ItemType Directory "$directory\$($ContainerName)" -Force
 $ListFiles = Get-ChildItem -File -Path $directory -Filter "*$ContainerName*" 
 ForEach ($File in $ListFiles)
 {
-    Move-Item -Path $File.FullName -Destination  "$directory\$($ContainerName)\$($File.Name)"      
+    Move-Item -Path $File.FullName -Destination  "$directory\$($ContainerName)\$($File.Name)" -Force      
 }
+$NewDir
