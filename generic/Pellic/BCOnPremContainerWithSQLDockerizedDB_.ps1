@@ -2,15 +2,11 @@
 $DockerSQL = "DockerizedSql"
 $SqlIP = docker inspect --format '{{.NetworkSettings.Networks.nat.IPAddress}}' $DockerSQL
 $databaseServer = $SqlIP 
-$path = "c:\ContainerDBFiles"
-$hostFolder = "$path\databases"
 $databaseInstance = ""
 $databaseName = "Cronusit"
 $UserName = "sa"
 $Password = "1qaz!QAZ"
 $databaseCredential = New-Object System.Management.Automation.PSCredential -argumentList $UserName, (ConvertTo-SecureString -String $Password -AsPlainText -Force)
-$dbPassword = [System.Runtime.InteropServices.Marshal]::PtrToStringAuto([System.Runtime.InteropServices.Marshal]::SecureStringToBSTR($databaseCredential.Password))
-$databaseServerInstance = @{ $true = "$databaseServer\$databaseInstance"; $false = "$databaseServer"}["$databaseInstance" -ne ""]
 
 #NAV SERVICE
 #$imageName = "microsoft/bcsandbox:it-ltsc2019"
@@ -27,7 +23,6 @@ if ($navcredential -eq $null -or $navcredential -eq [System.Management.Automatio
 #Additional parameters examples
 $workspaceFolder = (Get-Item (Join-Path $PSScriptRoot "..")).FullName
 $additionalParameters = @("--volume ""${workspaceFolder}:C:\Source""") 
-$additionalParameters = @("--volume ${hostFolder}:c:\mydb")
 $additionalParameters = @("--env clickonce=Y")
 
 #Public container for external access
