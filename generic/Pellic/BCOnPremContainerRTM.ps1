@@ -70,4 +70,13 @@ Create a project folder with all base application objects,
 setup app.json with reference to platform only,
 launch.json with reference to your development container and a settings.json with assemblyProbingPaths to the shared folder from this container
 #>
-Create-AlProjectFolderFromNavContainer -containerName $ContainerName -alProjectFolder $projectFolder -useBaseLine -addGIT
+#Create-AlProjectFolderFromNavContainer -containerName $ContainerName -alProjectFolder $projectFolder -useBaseLine -addGIT
+
+#eventually compile
+#Compile-AppInNavContainer -containerName $ContainerName -credential $navcredential -appProjectFolder $projectFolder
+
+<#
+uninstalls all apps,
+removes all C/AL objects and use the development endpoint of the container to publish the new app
+#>
+#Publish-NewApplicationToNavContainer -containerName $ContainerName -appDotNetPackagesFolder "${projectFolder}.netpackages" -appFile "${projectFolder}\output\Default Publisher_${ContainerName}_1.0.0.0.app" -credential $navcredential -useCleanDatabase
