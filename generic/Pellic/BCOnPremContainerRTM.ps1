@@ -38,6 +38,7 @@ New-NavContainer -accept_eula `
                  -licenseFile $licenseFile `
                  <#-myScripts @($attachdbSetupDatabaseScript)#> `
                  -includeCSide `
+                 -includeAL `
                  -doNotExportObjectsToText `
                  -shortcuts $shortcuts `
                  -additionalParameters $additionalParameters `
