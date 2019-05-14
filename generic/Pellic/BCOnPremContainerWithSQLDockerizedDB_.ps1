@@ -24,9 +24,12 @@ if ($navcredential -eq $null -or $navcredential -eq [System.Management.Automatio
 $workspaceFolder = (Get-Item (Join-Path $PSScriptRoot "..")).FullName
 $additionalParameters = @("--volume ""${workspaceFolder}:C:\Source""") 
 $additionalParameters = @("--env clickonce=Y")
+$addInsFolder = "C:\temp\addins"
+$additionalParameters = @("--volume ${addInsFolder}:c:\run\Add-Ins")
 
 #Public container for external access
 $additionalParameters = @("--publish 8080:8080",
+                          "--publish 80:80",
                           "--publish 443:443", 
                           "--publish 7046-7049:7046-7049")
 #$myscripts = @()
@@ -35,6 +38,7 @@ $licenseFile = 'C:\bkp pc lavoro\licenze nav\LICENZE\LICENZE\5165051_2018.flf'
 $ContainerName = "bc-onprem-dev"
 
 New-NavContainer -accept_eula `
+                 -useSSL `
                  -containerName $ContainerName `
                  -imageName $imageName `
                  -Auth NavUserPassword `

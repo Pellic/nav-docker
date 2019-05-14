@@ -25,9 +25,12 @@ $workspaceFolder = (Get-Item (Join-Path $PSScriptRoot "..")).FullName
 $additionalParameters = @("--volume ""${workspaceFolder}:C:\Source""") 
 $additionalParameters = @("--volume ${hostFolder}:c:\mydb")
 $additionalParameters = @("--env clickonce=Y")
+$addInsFolder = "C:\temp\addins"
+$additionalParameters = ("--volume ${addInsFolder}:c:\run\Add-Ins")
 
 #Public container for external access
 $additionalParameters = @("--publish 8080:8080",
+                          "--publish 80:80",
                           "--publish 443:443", 
                           "--publish 7046-7049:7046-7049")
 #$myscripts = @()
@@ -36,6 +39,7 @@ $licenseFile = 'C:\bkp pc lavoro\licenze nav\LICENZE\LICENZE\5165051_2018.flf'
 $ContainerName = "bc-sandbox-dev"
 
 New-NavContainer -accept_eula `
+                 -useSSL `
                  -containerName $ContainerName `
                  -imageName $imageName `
                  -Auth NavUserPassword `
@@ -50,7 +54,7 @@ New-NavContainer -accept_eula `
                  -includeCSide `
                  -doNotExportObjectsToText `
                  -shortcuts $shortcuts `
-                 <#-additionalParameters $additionalParameters #> `
+                 -additionalParameters $additionalParameters `
                  -enableSymbolLoading 
 
 New-NavContainerNavUser -ErrorAction Continue -containerName $ContainerName -Credential $navcredential -PermissionSetId SUPER -ChangePasswordAtNextLogOn $false
