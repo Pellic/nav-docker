@@ -2,9 +2,6 @@
 $DockerSQL = "DockerizedSql"
 $SqlIP = docker inspect --format '{{.NetworkSettings.Networks.nat.IPAddress}}' $DockerSQL
 $databaseServer = $SqlIP 
-$path = "c:\ContainerDBFiles"
-$hostFolder = "$path\databases"
-
 $databaseInstance = ""
 $databaseName = "FinancialsIT"
 $UserName = "sa"
@@ -15,8 +12,6 @@ $databaseServerInstance = @{ $true = "$databaseServer\$databaseInstance"; $false
 
 #NAV SERVICE
 $imageName = "microsoft/bcsandbox:it-ltsc2019"
-#$imageName = "microsoft/dynamics-nav:11.0.21441.0-it-ltsc2019"
-#$imageName = "mcr.microsoft.com/businesscentral/onprem:it-ltsc2019"
 $NavUserName = "EMPE"
 $NavPassword = "1qaz!QAZ"
 $navcredential = New-Object System.Management.Automation.PSCredential -argumentList $NavUserName, (ConvertTo-SecureString -String $NavPassword -AsPlainText -Force)
