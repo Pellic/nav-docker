@@ -49,7 +49,7 @@ New-NavContainer -accept_eula `
                  -includeCSide `
                  -doNotExportObjectsToText `
                  -shortcuts $shortcuts `
-                 <#-additionalParameters $additionalParameters #> `
+                 -additionalParameters $additionalParameters `
                  -enableSymbolLoading 
 
 New-NavContainerNavUser -ErrorAction Continue -containerName $ContainerName  -Credential $navcredential -PermissionSetId SUPER -ChangePasswordAtNextLogOn $false
