@@ -10,6 +10,12 @@ if ($navcredential -eq $null -or $navcredential -eq [System.Management.Automatio
 {
     $navcredential = get-credential -UserName "admin" -Message "Enter NAV Super User Credentials"
 }
+<#
+alProjectFolder should be in a location,
+which is shared with the container,
+a folder underneath C:\ProgramData\NavContainerHelper will work.
+#>
+$projectFolder = "C:\ProgramData\NavContainerHelper\AL\DemoSolution"
 
 #Additional parameters examples
 $workspaceFolder = (Get-Item (Join-Path $PSScriptRoot "..")).FullName
@@ -37,12 +43,13 @@ New-NavContainer -accept_eula `
                  -updateHosts `
                  -licenseFile $licenseFile `
                  <#-myScripts @($attachdbSetupDatabaseScript)#> `
-                 -includeCSide `
+                 <#-enableSymbolLoading#> `
+                 <#-includeCSide#> `
                  -includeAL `
                  -doNotExportObjectsToText `
                  -shortcuts $shortcuts `
-                 -additionalParameters $additionalParameters `
-                 -enableSymbolLoading 
+                 -additionalParameters $additionalParameters
+
 
 New-NavContainerNavUser -ErrorAction Continue -containerName $ContainerName  -Credential $navcredential -PermissionSetId SUPER -ChangePasswordAtNextLogOn $false
 
@@ -55,3 +62,9 @@ ForEach ($File in $ListFiles)
     Move-Item -Path $File.FullName -Destination  "$directory\$($ContainerName)\$($File.Name)" -Force     
 }
 $NewDir
+<#
+Create a project folder with all base application objects,
+setup app.json with reference to platform only,
+launch.json with reference to your development container and a settings.json with assemblyProbingPaths to the shared folder from this container
+#>
+Create-AlProjectFolderFromNavContainer -containerName $ContainerName -alProjectFolder $projectFolder -useBaseLine -addGIT
