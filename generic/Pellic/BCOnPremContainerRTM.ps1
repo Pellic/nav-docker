@@ -38,7 +38,7 @@ $licenseFile = 'C:\bkp pc lavoro\licenze nav\LICENZE\LICENZE\5165051_2018.flf'
 $ContainerName = "bc-onprem-rtm"
 
 New-NavContainer -accept_eula `
-                 -useSSL `
+                 <#-useSSL#> `
                  -containerName $ContainerName `
                  -imageName $imageName `
                  -Auth NavUserPassword `
