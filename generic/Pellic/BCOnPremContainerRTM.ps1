@@ -25,10 +25,13 @@ $addInsFolder = "C:\temp\addins"
 $additionalParameters = @("--volume ${addInsFolder}:c:\run\Add-Ins")
 
 #Public container for external access
+$publicdnsName = "bc-onprem-rtm"
 $additionalParameters = @("--publish 8080:8080",
                           "--publish 80:80",
                           "--publish 443:443", 
-                          "--publish 7046-7049:7046-7049")
+                          "--publish 7046-7049:7046-7049"
+                          "--env PublicDnsName=$publicdnsName"
+                          )
 #$myscripts = @()
 $shortcuts = "Desktop"
 $licenseFile = 'C:\bkp pc lavoro\licenze nav\LICENZE\LICENZE\5165051_2018.flf'
