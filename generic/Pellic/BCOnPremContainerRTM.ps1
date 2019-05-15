@@ -34,7 +34,7 @@ $additionalParameters = @("--publish 8080:8080",
                           )
 #$myscripts = @()
 $shortcuts = "Desktop"
-$licenseFile = 'C:\bkp pc lavoro\licenze nav\LICENZE\LICENZE\5165051_2018.flf'
+$licenseFile = 'C:\bkp pc lavoro\licenze nav\LICENZE\LICENZE\5165051.flf'
 $ContainerName = "bc-onprem-rtm"
 
 New-NavContainer -accept_eula `

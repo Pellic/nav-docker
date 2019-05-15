@@ -49,10 +49,10 @@ New-NavContainer -accept_eula `
                  -navDvdCountry it `
                  -Auth NavUserPassword `
                  -Credential $navcredential `
-                 -databaseServer $databaseServer `
-                 -databaseInstance $databaseInstance `
-                 -databaseName $databaseName `
-                 -databaseCredential $databaseCredential `
+                 <#-databaseServer $databaseServer#> `
+                 <#-databaseInstance $databaseInstance#> `
+                 <#-databaseName $databaseName#> `
+                 <#-databaseCredential $databaseCredential#> `
                  -updateHosts `
                  -doNotExportObjectsToText `
                  -Verbose `
