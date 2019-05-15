@@ -65,6 +65,8 @@ ForEach ($File in $ListFiles)
     Move-Item -Path $File.FullName -Destination  "$directory\$($ContainerName)\$($File.Name)" -Force     
 }
 $NewDir
+
+#BASE APP CUSTOMIZATION
 <#
 Create a project folder with all base application objects,
 setup app.json with reference to platform only,
